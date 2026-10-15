@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>미래신용정보 상담 Hero 샘플</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;background:#111;font-family:Arial,"Noto Sans KR","Malgun Gothic",sans-serif}
+    body{overflow:hidden}
+
+    .hero{
+      position:relative;
+      width:100vw;
+      height:100vh;
+      min-height:620px;
+      overflow:hidden;
+      background:#111;
+    }
+
+    .hero video{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center center;
+      background:#111;
+    }
+
+    /* 밝은 사무실 영상에서도 왼쪽 문구가 안정적으로 보이도록 */
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg,
+          rgba(12,14,18,.68) 0%,
+          rgba(12,14,18,.47) 22%,
+          rgba(12,14,18,.18) 40%,
+          rgba(12,14,18,0) 61%);
+    }
+
+    .copy{
+      position:absolute;
+      z-index:2;
+      left:clamp(42px,6.2vw,118px);
+      top:50%;
+      transform:translateY(-49%);
+      width:min(34vw,620px);
+      min-width:430px;
+      color:#fff;
+      text-shadow:0 2px 18px rgba(0,0,0,.34);
+      pointer-events:none;
+    }
+
+    .eyebrow,
+    .headline,
+    .description{
+      opacity:0;
+      transform:translateY(18px);
+      transition:opacity .75s ease, transform .75s cubic-bezier(.2,.8,.2,1);
+      will-change:opacity,transform;
+    }
+    .show{opacity:1;transform:translateY(0)}
+
+    .eyebrow{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin-bottom:18px;
+      font-size:clamp(15px,1vw,21px);
+      font-weight:700;
+      letter-spacing:-.02em;
+      color:rgba(255,255,255,.94);
+    }
+    .eyebrow::before{
+      content:"";
+      width:34px;
+      height:3px;
+      border-radius:10px;
+      background:#8f3f78;
+      box-shadow:0 0 16px rgba(143,63,120,.45);
+    }
+
+    .headline{
+      margin:0;
+      font-size:clamp(40px,3.6vw,72px);
+      line-height:1.17;
+      letter-spacing:-.055em;
+      font-weight:800;
+      word-break:keep-all;
+    }
+    .headline .line2{display:block;margin-top:3px}
+
+    .divider{
+      width:58px;
+      height:1px;
+      margin:27px 0 22px;
+      background:rgba(255,255,255,.58);
+    }
+
+    .description{
+      max-width:570px;
+      margin:0;
+      font-size:clamp(16px,1.15vw,22px);
+      line-height:1.75;
+      letter-spacing:-.025em;
+      font-weight:400;
+      color:rgba(255,255,255,.91);
+      word-break:keep-all;
+    }
+
+    @media (max-width:900px){
+      .hero{min-height:520px}
+      .hero video{object-position:58% center}
+      .hero::after{
+        background:linear-gradient(90deg,rgba(10,12,15,.68) 0%,rgba(10,12,15,.45) 48%,rgba(10,12,15,.08) 76%);
+      }
+      .copy{
+        left:28px;
+        width:72vw;
+        min-width:0;
+        top:54%;
+      }
+      .headline{font-size:clamp(34px,7.2vw,58px)}
+      .description{font-size:15px;max-width:80vw}
+    }
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <!-- 이 HTML 파일과 같은 폴더의 hero.mp4를 자동 재생합니다. -->
+    <video id="heroVideo" autoplay muted loop playsinline preload="metadata">
+      <source src="hero.mp4" type="video/mp4" />
+    </video>
+
+    <div class="copy" aria-label="미래신용정보 상담 홍보 문구">
+      <div id="eyebrow" class="eyebrow">신뢰를 연결하는 전문 상담</div>
+
+      <h1 id="headline" class="headline">
+        고객의 이야기를 듣고
+        <span class="line2">더 나은 해결을 제안합니다.</span>
+      </h1>
+
+      <div class="divider"></div>
+
+      <p id="description" class="description">
+        미래신용정보는 전문적인 상담과 체계적인 관리로<br>
+        고객의 신뢰를 이어갑니다.
+      </p>
+    </div>
+  </section>
+
+  <script>
+    const video = document.getElementById('heroVideo');
+    const eyebrow = document.getElementById('eyebrow');
+    const headline = document.getElementById('headline');
+    const description = document.getElementById('description');
+
+    function updateCopy(t){
+      // 15초 영상 기준. 반복 재생될 때 자동으로 다시 시작합니다.
+      eyebrow.classList.toggle('show', t >= 0.45);
+      headline.classList.toggle('show', t >= 2.25);
+      description.classList.toggle('show', t >= 7.6);
+    }
+
+    video.addEventListener('timeupdate', () => updateCopy(video.currentTime));
+    video.addEventListener('seeked', () => updateCopy(video.currentTime));
+    video.addEventListener('loadedmetadata', () => updateCopy(0));
+
+    // hero.mp4가 같은 폴더에 있다면 재생 시도
+    video.play().catch(()=>{});
+  </script>
+</body>
+</html>
